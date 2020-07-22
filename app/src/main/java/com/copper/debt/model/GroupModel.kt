@@ -1,13 +1,18 @@
 package com.copper.debt.model
 
 data class GroupResponse(
-    val id: String = "",
     val name: String = "",
-    val users: List<User> = listOf()
+    val usersIds: List<String> = listOf()
 )
+
+fun GroupResponse.isValid() =
+    name.isNotBlank()
+
+
+fun GroupResponse.mapToGroup(groupId: String) = Group(groupId, name, usersIds)
 
 data class Group(
     val id: String,
     val name: String,
-    val users: List<User>
+    val users: List<String>
 )

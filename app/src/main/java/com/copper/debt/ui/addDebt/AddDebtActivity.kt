@@ -10,6 +10,7 @@ import com.copper.debt.common.onTextChanged
 import com.copper.debt.common.showGeneralError
 import kotlinx.android.synthetic.main.activity_add_debt.*
 
+
 class AddDebtActivity : AppCompatActivity(), AddDebtView{
 
     private val presenter by lazy {addDebtPresenter()}

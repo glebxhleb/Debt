@@ -27,4 +27,11 @@
     <string name="welcome_to_our_pun_ground">Welcome to our Pun-ground</string>
     <string name="favorite_button">favorite button</string>
     <string name="add_debt_button">add debt button</string>
+
+
+    <string-array name="currency">
+        <item>₽</item>
+        <item>$</item>
+        <item>€</item>
+    </string-array>
 </resources>

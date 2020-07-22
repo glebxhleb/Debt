@@ -10,7 +10,7 @@ class DebtHolder(
 
   fun displayData(debt: Debt) = with(itemView) {
 
-    lender.text = debt.creditorName
+    lender.text = debt.creditorId
     debtDescription.text = debt.text
   }
 }
