@@ -20,5 +20,4 @@ interface FirebaseDatabaseInterface  {
     fun getGroup(groupId: String, onResult: (Group) -> Unit)
 
     fun addNewGroup(group: Group, onResult: (Boolean) -> Unit)
-
 }

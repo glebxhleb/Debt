@@ -14,240 +14,236 @@
         app:navigationIcon="@drawable/ic_arrow_back_white"
         app:title="Новое событие" />
 
-    <ScrollView
-        android:id="@+id/scroll"
+
+    <LinearLayout
+        android:id="@+id/ll_scrollable"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <LinearLayout
-            android:id="@+id/ll_scrollable"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/debtDescription"
+            style="@style/InputEditText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
+            android:layout_height="50dp"
+            android:hint="Описание" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/debtDescription"
-                style="@style/InputEditText"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_group"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <View
+                android:id="@+id/bottom_line0"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Описание" />
+                android:layout_height="0.9dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.8"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_group"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <View
-                    android:id="@+id/bottom_line0"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.9dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:alpha="0.8"
-                    android:background="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_group"
-                    style="@style/SignText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Группа"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line0"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/group"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="6dp"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line0"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tv_group" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_date"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <View
-                    android:id="@+id/bottom_line1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.9dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:alpha="0.8"
-                    android:background="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_date"
-                    style="@style/SignText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Дата"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line1"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/date"
-                    style="@style/DateButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="__:__ __.__.____"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tv_date" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_creditor"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <View
-                    android:id="@+id/bottom_line2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.9dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:alpha="0.8"
-                    android:background="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_creditor"
-                    style="@style/SignText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Платил"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line2"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/creditor"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="6dp"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tv_creditor" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_sum"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <View
-                    android:id="@+id/bottom_line3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.9dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:alpha="0.8"
-                    android:background="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_sum"
-                    style="@style/SignText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Сумма"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line3"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/sum"
-                    style="@style/InputEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:inputType="number|numberDecimal"
-                    app:layout_constraintEnd_toStartOf="@+id/appCompatSpinner"
-                    app:layout_constraintStart_toEndOf="@+id/tv_sum" />
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/appCompatSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:entries="@array/currency"
-                    app:layout_constraintBottom_toTopOf="@+id/bottom_line3"
-                    app:layout_constraintEnd_toEndOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_buttons"
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_group"
+                style="@style/SignText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Группа"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line0"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/equalSplit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:text="Поровну" />
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_group" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addDebtor"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_add_debtor" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/calcSum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:text="Посчитать" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_date"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
 
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
+            <View
+                android:id="@+id/bottom_line1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1" />
+                android:layout_height="0.9dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.8"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_date"
+                style="@style/SignText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Дата"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line1"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addDebt"
-                android:layout_width="match_parent"
+                android:id="@+id/date"
+                style="@style/DateButton"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/add_debt_text" />
+                android:layout_marginStart="16dp"
+                android:text="__:__ __.__.____"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_creditor"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <View
+                android:id="@+id/bottom_line2"
+                android:layout_width="match_parent"
+                android:layout_height="0.9dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.8"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_creditor"
+                style="@style/SignText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Платил"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line2"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/creditor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_creditor" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_sum"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <View
+                android:id="@+id/bottom_line3"
+                android:layout_width="match_parent"
+                android:layout_height="0.9dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.8"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_sum"
+                style="@style/SignText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Сумма"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line3"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/sum"
+                style="@style/InputEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:inputType="number|numberDecimal"
+                app:layout_constraintEnd_toStartOf="@+id/appCompatSpinner"
+                app:layout_constraintStart_toEndOf="@+id/tv_sum" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/appCompatSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:entries="@array/currency"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_line3"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/equalSplit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="Поровну" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/addDebtor"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_add_debtor" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/calcSum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="Посчитать" />
+
         </LinearLayout>
-    </ScrollView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1" />
+
+        <!--            <androidx.appcompat.widget.AppCompatButton-->
+        <!--                android:id="@+id/addDebt"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="@string/add_debt_text" />-->
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

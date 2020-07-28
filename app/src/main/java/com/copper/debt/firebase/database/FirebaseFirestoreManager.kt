@@ -59,7 +59,7 @@ class FirebaseFirestoreManager @Inject constructor(
     }
 
     override fun createUser(id: String, name: String, email: String) {
-        val user = User(id, name, email)
+        val user = User(id, name, email, listOf())
 
         database.collection(KEY_USER)
             .document(id)

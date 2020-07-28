@@ -1,11 +1,9 @@
 package com.copper.debt.model
 
-import android.provider.ContactsContract
-
 data class UserResponse(
     val username: String = "",
     val email: String = "",
-    val contactsIds: List<String> = listOf()
+    val contactsIds: Map<String, String> = mapOf()
 )
 fun UserResponse.isValid() =
         username.isNotBlank()
@@ -17,7 +15,7 @@ data class User(
     val id: String,
     val username: String,
     val email: String,
-    val contactsIds: List<String>)
+    val contactsIds: Map<String, String>)
 
 fun User.mapToRequest() :  HashMap<String, Any>{
     val request = HashMap<String, Any>()
