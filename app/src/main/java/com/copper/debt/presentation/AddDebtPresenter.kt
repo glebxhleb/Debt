@@ -9,6 +9,8 @@ import java.util.*
 
 interface AddDebtPresenter : BasePresenter<AddDebtView> {
 
+    fun viewReady()
+
     fun addDebtTapped()
 
     fun onDebtTextChanged(debtText: String)
@@ -31,7 +33,7 @@ interface AddDebtPresenter : BasePresenter<AddDebtView> {
 
     fun addDebtorsTapped()
 
-    fun addDebtor(debtorName: String)
+    fun addDebtorSelected(debtorName: String)
 
-    fun removeDebtor(debtorName: String)
+    fun removeDebtorSelected(debtorName: String)
 }

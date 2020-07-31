@@ -2,24 +2,32 @@ package com.copper.debt.ui.addDebt
 
 import android.app.DatePickerDialog
 import android.content.DialogInterface
-import android.content.DialogInterface.OnMultiChoiceClickListener
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import android.widget.AdapterView
+
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.copper.debt.R
 import com.copper.debt.addDebtPresenter
 import com.copper.debt.common.onClick
+import com.copper.debt.common.onItemSelected
 import com.copper.debt.common.onTextChanged
 import com.copper.debt.common.showGeneralError
+import com.copper.debt.model.Debtor
+import com.copper.debt.ui.addDebt.list.DebtorAdapter
 import kotlinx.android.synthetic.main.activity_add_debt.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
+
 class AddDebtActivity : AppCompatActivity(), AddDebtView {
 
     private val presenter by lazy { addDebtPresenter() }
+    private val adapter = DebtorAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +35,15 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         presenter.setView(this)
 
         initUi()
+
     }
 
     private fun initUi() {
         debtDescription.onTextChanged { presenter.onDebtTextChanged(it) }
         addDebt.onClick { presenter.addDebtTapped() }
         date.onClick { presenter.dateChangeTapped() }
+        debtors.layoutManager = LinearLayoutManager(this)
+        debtors.adapter = adapter
     }
 
     override fun onDebtAdded() = finish()
@@ -72,9 +83,9 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
             adb.setMultiChoiceItems(contactsNames, contactsAreSelected)
             { _: DialogInterface?, which: Int, isChecked: Boolean ->
                 if (isChecked)
-                    presenter.addDebtor(contactsNames[which])
+                    presenter.addDebtorSelected(contactsNames[which])
                 else
-                    presenter.removeDebtor(contactsNames[which])
+                    presenter.removeDebtorSelected(contactsNames[which])
             }
 
             adb.setPositiveButton("Закрыть") { dialog, _ ->
@@ -85,5 +96,39 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         dialog.show()
     }
 
+    override fun addDebtor(debtor: Debtor) {
+        adapter.addDebtor(debtor)
+    }
 
+    override fun removeDebtor(id: String) {
+        adapter.removeDebtor(id)
+    }
+
+    override fun showDescription(text: String) {
+        if (text.isNotBlank()) debtDescription.setText(text)
+    }
+
+    override fun showGroupOptions(groups: List<String>, currentGroup: String) {
+        val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, groups)
+        group.adapter = spinnerAdapter
+        group.onItemSelected {  }
+    }
+
+    override fun showDate(dateText: String) {
+        date.text = dateText
+    }
+
+    override fun showCreditorOptions(groupUsers: List<String>, currentCreditor: String) {
+        val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, groupUsers)
+        creditor.adapter = spinnerAdapter
+        group.onItemSelected {  }
+    }
+
+    override fun showSum(sumText: Double) {
+        sum.setText(sumText.toString())
+    }
+
+    override fun showCurrencyOptions(currencies: List<String>, currentCurrency: String) {
+        TODO("Not yet implemented")
+    }
 }

@@ -3,7 +3,9 @@ package com.copper.debt.common
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.viewpager.widget.ViewPager
 
 inline fun View.onClick(crossinline onClickHandler: () -> Unit) {
@@ -28,4 +30,13 @@ inline fun ViewPager.onPageChange(crossinline onPageChangeHandler: (Int) -> Unit
 
         override fun onPageSelected(position: Int) = onPageChangeHandler(position)
     })
+}
+
+inline fun Spinner.onItemSelected(crossinline onItemChangeHandler: (String) -> Unit) {
+    onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) =
+            onItemChangeHandler(parent?.getItemAtPosition(position).toString())
+    }
 }

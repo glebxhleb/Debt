@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.copper.debt.R
 import com.copper.debt.allDebtsPresenter
 import com.copper.debt.model.Debt
-import com.copper.debt.presentation.AllDebtsPresenter
 import com.copper.debt.ui.debts.list.DebtAdapter
-
 import kotlinx.android.synthetic.main.fragment_debts.*
 
 class AllDebtsFragment : Fragment(), AllDebtsView {

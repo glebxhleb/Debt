@@ -4,10 +4,7 @@ import com.copper.debt.common.getFormatTime
 import com.copper.debt.common.isValidDebt
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
 import com.copper.debt.firebase.database.FirebaseDatabaseInterface
-import com.copper.debt.model.Debt
-import com.copper.debt.model.Group
-import com.copper.debt.model.Status
-import com.copper.debt.model.User
+import com.copper.debt.model.*
 import com.copper.debt.presentation.AddDebtPresenter
 import com.copper.debt.ui.addDebt.AddDebtView
 import java.util.*
@@ -21,7 +18,7 @@ class AddDebtPresenterImpl @Inject constructor(
     private lateinit var view: AddDebtView
 
     private var groupUsers = mutableMapOf<String, String>()
-    private var involvedUsers = mutableMapOf<String, String>()
+    private var involvedUsers = mutableListOf<Debtor>()
 
     private var groupId = ""
     private var debtText = ""
@@ -32,6 +29,10 @@ class AddDebtPresenterImpl @Inject constructor(
     private var fixedSum = 0.0
     private var contactNames = emptyArray<String>()
     private var contactsAreSelected = BooleanArray(0)
+
+    override fun viewReady() {
+
+    }
 
     fun onContactsGroupSelected() {
         databaseInterface.getProfile(authenticationInterface.getUserId()) { currentUser ->
@@ -128,19 +129,25 @@ class AddDebtPresenterImpl @Inject constructor(
         view.showAddDebtorsDialog(contactNames, contactsAreSelected)
     }
 
-    override fun addDebtor(debtorName: String) {
+    override fun addDebtorSelected(debtorName: String) {
         val ids = groupUsers.filterValues { it == debtorName }.keys
-        if (ids.isNotEmpty())
-            involvedUsers[ids.first()] = debtorName
-    }
-
-    override fun removeDebtor(debtorName: String) {
-        val ids = groupUsers.filterValues { it == debtorName }.keys
-        if (ids.isNotEmpty())
-            ids.forEach { involvedUsers.remove(it) }
-    }
-
-        override fun setView(view: AddDebtView) {
-            this.view = view
+        if (ids.isNotEmpty()) {
+            val debtor = Debtor(debtorName, ids.first())
+            involvedUsers.add(debtor)
+            view.addDebtor(debtor)
         }
     }
+
+    override fun removeDebtorSelected(debtorName: String) {
+        val ids = groupUsers.filterValues { it == debtorName }.keys
+        if (ids.isNotEmpty())
+            ids.forEach { id ->
+                involvedUsers.removeAll { it.id == id }
+                view.removeDebtor(id)
+            }
+    }
+
+    override fun setView(view: AddDebtView) {
+        this.view = view
+    }
+}
