@@ -59,7 +59,7 @@ class FirebaseFirestoreManager @Inject constructor(
     }
 
     override fun createUser(id: String, name: String, email: String) {
-        val user = User(id, name, email, listOf())
+        val user = User(id, name, email, mapOf())
 
         database.collection(KEY_USER)
             .document(id)
@@ -93,6 +93,10 @@ class FirebaseFirestoreManager @Inject constructor(
     }
 
     override fun addNewGroup(group: Group, onResult: (Boolean) -> Unit) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserGroups(id: String, omResult: (List<Group>) -> Unit) {
         TODO("Not yet implemented")
     }
 }

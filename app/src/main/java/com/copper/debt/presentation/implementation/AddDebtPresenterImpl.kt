@@ -17,8 +17,9 @@ class AddDebtPresenterImpl @Inject constructor(
 ) : AddDebtPresenter {
     private lateinit var view: AddDebtView
 
-    private var groupUsers = mutableMapOf<String, String>()
-    private var involvedUsers = mutableListOf<Debtor>()
+    private var userGroups = listOf<Group>()
+    private var groupUsers = mutableMapOf<String, User>()
+    private var debtors = mutableListOf<Debtor>()
 
     private var groupId = ""
     private var debtText = ""
@@ -27,31 +28,39 @@ class AddDebtPresenterImpl @Inject constructor(
     private var debtDate = Calendar.getInstance()
     private var currency = Currency.getInstance(Locale("ru", "RU"))
     private var fixedSum = 0.0
-    private var contactNames = emptyArray<String>()
-    private var contactsAreSelected = BooleanArray(0)
+
 
     override fun viewReady() {
 
     }
 
-    fun onContactsGroupSelected() {
+    private fun getGroups() {
+        databaseInterface.getUserGroups(authenticationInterface.getUserId()) { groups ->
+            userGroups = groups
+        }
+    }
+
+    private fun onContactsGroupSelected() {
         databaseInterface.getProfile(authenticationInterface.getUserId()) { currentUser ->
-            val contacts = mutableListOf<String>()
             groupUsers.clear()
-            groupUsers.putAll(currentUser.contactsIds)
 
-            currentUser.contactsIds.forEach {
-                contacts.add(it.value)
+            currentUser.contactsIds.map {
+                databaseInterface.getProfile(it) { user -> groupUsers[it] = user }
             }
+        }
+    }
 
-            contactNames = contacts.toTypedArray()
-            contactsAreSelected = BooleanArray(contactNames.size)
+    private fun onGroupSelected(group: Group) {
+        groupUsers.clear()
+
+        group.users.map {
+            databaseInterface.getProfile(it) { user -> groupUsers[it] = user }
         }
     }
 
     override fun addDebtTapped() {
         if (isValidDebt(debtText)) {
-            val creditorName = groupUsers[creditorId] ?: ""
+            val creditorName = groupUsers[creditorId]?.username ?: ""
             val debt = Debt(
                 "",
                 groupId,
@@ -90,6 +99,11 @@ class AddDebtPresenterImpl @Inject constructor(
 
     override fun onGroupChanged(group: Group) {
         groupId = group.id
+        if (groupId == NO_GROUP_ID) {
+            onContactsGroupSelected()
+        } else {
+            onGroupSelected(group)
+        }
     }
 
     override fun dateChangeTapped() {
@@ -113,8 +127,8 @@ class AddDebtPresenterImpl @Inject constructor(
         fixedSum = sum
     }
 
-    override fun onCurrencyChanged(currency: Currency) {
-        this.currency = currency
+    override fun onCurrencyChanged(currencyCode: String) {
+        this.currency = Currency.getInstance(currencyCode)
     }
 
     override fun equalCalcTapped() {
@@ -126,25 +140,20 @@ class AddDebtPresenterImpl @Inject constructor(
     }
 
     override fun addDebtorsTapped() {
-        view.showAddDebtorsDialog(contactNames, contactsAreSelected)
+        val involvedUsers: List<User> = debtors.map { it.user }
+        val availableUsers: List<User> = groupUsers.values.toList()
+        view.showAddDebtorsDialog(availableUsers, involvedUsers)
     }
 
-    override fun addDebtorSelected(debtorName: String) {
-        val ids = groupUsers.filterValues { it == debtorName }.keys
-        if (ids.isNotEmpty()) {
-            val debtor = Debtor(debtorName, ids.first())
-            involvedUsers.add(debtor)
-            view.addDebtor(debtor)
-        }
+    override fun addDebtorSelected(newDebtor: User) {
+        val debtor = Debtor(newDebtor)
+        debtors.add(debtor)
+        view.addDebtor(debtor)
     }
 
-    override fun removeDebtorSelected(debtorName: String) {
-        val ids = groupUsers.filterValues { it == debtorName }.keys
-        if (ids.isNotEmpty())
-            ids.forEach { id ->
-                involvedUsers.removeAll { it.id == id }
-                view.removeDebtor(id)
-            }
+    override fun removeDebtorSelected(userId: String) {
+        debtors.removeAll { it.user.id == userId }
+        view.removeDebtor(userId)
     }
 
     override fun setView(view: AddDebtView) {

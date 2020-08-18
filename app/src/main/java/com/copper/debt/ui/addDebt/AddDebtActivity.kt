@@ -3,8 +3,6 @@ package com.copper.debt.ui.addDebt
 import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -17,11 +15,12 @@ import com.copper.debt.common.onItemSelected
 import com.copper.debt.common.onTextChanged
 import com.copper.debt.common.showGeneralError
 import com.copper.debt.model.Debtor
+import com.copper.debt.model.Group
+import com.copper.debt.model.User
 import com.copper.debt.ui.addDebt.list.DebtorAdapter
 import kotlinx.android.synthetic.main.activity_add_debt.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-
 
 
 class AddDebtActivity : AppCompatActivity(), AddDebtView {
@@ -35,7 +34,6 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         presenter.setView(this)
 
         initUi()
-
     }
 
     private fun initUi() {
@@ -74,8 +72,8 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
     }
 
     override fun showAddDebtorsDialog(
-        contactsNames: Array<String>,
-        contactsAreSelected: BooleanArray
+        groupUsers: List<User>,
+        involvedUsers: List<User>
     ) {
         val adb = AlertDialog.Builder(this)
         adb.setTitle("Добавить участников")
@@ -108,27 +106,38 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         if (text.isNotBlank()) debtDescription.setText(text)
     }
 
-    override fun showGroupOptions(groups: List<String>, currentGroup: String) {
-        val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, groups)
+    override fun showGroupOptions(groups: List<Group>, currentGroup: String) {
+        val spinnerAdapter =
+            ArrayAdapter<Group>(this, android.R.layout.simple_spinner_item, groups)
         group.adapter = spinnerAdapter
-        group.onItemSelected {  }
+        group.onItemSelected { selectedGroup: Group ->
+            presenter.onGroupChanged(selectedGroup)
+        }
     }
 
     override fun showDate(dateText: String) {
         date.text = dateText
     }
 
-    override fun showCreditorOptions(groupUsers: List<String>, currentCreditor: String) {
-        val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, groupUsers)
+    override fun showCreditorOptions(groupUsers: List<User>, currentCreditor: String) {
+        val spinnerAdapter =
+            ArrayAdapter<User>(this, android.R.layout.simple_spinner_item, groupUsers)
         creditor.adapter = spinnerAdapter
-        group.onItemSelected {  }
+        group.onItemSelected { creditor: User ->
+            presenter.onCreditorChanged(creditor)
+        }
     }
 
-    override fun showSum(sumText: Double) {
-        sum.setText(sumText.toString())
+    override fun showSum(sum: Double) {
+        this.sum.setText(sum.toString())
     }
 
     override fun showCurrencyOptions(currencies: List<String>, currentCurrency: String) {
-        TODO("Not yet implemented")
+        val spinnerAdapter =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, currencies)
+        group.adapter = spinnerAdapter
+        group.onItemSelected { selectedCurrency: String ->
+            presenter.onCurrencyChanged(selectedCurrency)
+        }
     }
 }

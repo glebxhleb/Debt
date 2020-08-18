@@ -25,7 +25,7 @@ interface AddDebtPresenter : BasePresenter<AddDebtView> {
 
     fun onSumChanged(sum: Double)
 
-    fun onCurrencyChanged(currency: Currency)
+    fun onCurrencyChanged(currencyCode: String)
 
     fun equalCalcTapped()
 

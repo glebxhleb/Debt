@@ -1,5 +1,10 @@
 package com.copper.debt.model
 
+import com.copper.debt.R
+
+const val NO_GROUP = R.string.without_group
+const val NO_GROUP_ID = "no group"
+
 data class GroupResponse(
     val name: String = "",
     val usersIds: List<String> = listOf()

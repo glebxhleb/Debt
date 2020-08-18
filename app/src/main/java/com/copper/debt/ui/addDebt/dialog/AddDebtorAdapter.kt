@@ -1,4 +1,4 @@
-package com.copper.debt.ui.addDebt.list
+package com.copper.debt.ui.addDebt.dialog
 
 import DebtorHolder
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.copper.debt.model.Debt
 import com.copper.debt.model.Debtor
 import com.copper.debt.ui.debts.list.DebtHolder
 
-class DebtorAdapter : RecyclerView.Adapter<DebtorHolder>() {
+class AddDebtorAdapter : RecyclerView.Adapter<DebtorHolder>() {
 
     private val items = mutableListOf<Debtor>()
 
