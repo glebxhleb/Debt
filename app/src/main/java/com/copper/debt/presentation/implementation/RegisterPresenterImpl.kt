@@ -81,7 +81,7 @@ class RegisterPresenterImpl @Inject constructor(
   private fun createUser(name: String, email: String) {
     val id = authentication.getUserId()
 
-    database.createUser(id, name, email)
+    database.createUser(id, name, email){}
   }
 }
 

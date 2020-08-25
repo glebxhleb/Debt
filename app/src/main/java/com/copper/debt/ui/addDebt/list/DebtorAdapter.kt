@@ -1,13 +1,10 @@
 package com.copper.debt.ui.addDebt.list
 
-import DebtorHolder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.copper.debt.R
-import com.copper.debt.model.Debt
 import com.copper.debt.model.Debtor
-import com.copper.debt.ui.debts.list.DebtHolder
 
 class DebtorAdapter : RecyclerView.Adapter<DebtorHolder>() {
 

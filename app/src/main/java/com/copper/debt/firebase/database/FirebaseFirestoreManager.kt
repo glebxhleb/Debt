@@ -2,11 +2,13 @@ package com.copper.debt.firebase.database
 
 import android.util.Log
 import com.copper.debt.model.*
-import com.google.firebase.database.*
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.tasks.await
+import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 private const val KEY_USER = "user"
@@ -16,6 +18,7 @@ private const val KEY_GROUP = "group"
 class FirebaseFirestoreManager @Inject constructor(
     private val database: FirebaseFirestore
 ) : FirebaseDatabaseInterface {
+
     override fun listenToDebts(onResult: (Debt) -> Unit) {
         database.collection(KEY_DEBT)
             .addSnapshotListener { value, e ->
@@ -30,7 +33,7 @@ class FirebaseFirestoreManager @Inject constructor(
                         DocumentChange.Type.ADDED -> {
                             doc.document.toObject<DebtResponse>().run {
                                 if (isValid()) {
-                                    onResult(mapToDebt(doc.document.id))
+                                    onResult(mapToDebt())
                                 }
                             }
                         }
@@ -46,9 +49,9 @@ class FirebaseFirestoreManager @Inject constructor(
     }
 
     override fun addNewDebt(debt: Debt, onResult: (Boolean) -> Unit) {
-
         database.collection(KEY_DEBT)
-            .add(debt.mapToRequest())
+            .document(debt.id)
+            .set(debt.mapToRequest())
             .addOnCompleteListener {
                 onResult(it.isComplete && it.isSuccessful)
             }
@@ -58,14 +61,14 @@ class FirebaseFirestoreManager @Inject constructor(
 
     }
 
-    override fun createUser(id: String, name: String, email: String) {
-        val user = User(id, name, email, mapOf())
+    override fun createUser(id: String, name: String, email: String, onResult: () -> Unit) {
+        val user = User(name, email, listOf(), id)
 
         database.collection(KEY_USER)
             .document(id)
             .set(user.mapToRequest())
-            .addOnSuccessListener { documentReference ->
-
+            .addOnSuccessListener {
+                onResult()
             }
             .addOnFailureListener { e ->
                 Log.w(KEY_DEBT, "Error adding document", e)
@@ -78,14 +81,64 @@ class FirebaseFirestoreManager @Inject constructor(
             .document(id)
             .get()
             .addOnSuccessListener { querySnapshot ->
-                // Успешно получили данные. Список в querySnapshot.documents
+
                 val user = querySnapshot.toObject<UserResponse>()
                 user?.run {
                     if (isValid())
-                    onResult(mapToUser(id)) }
+                        onResult(mapToUser())
+                }
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
             }
+    }
+
+    override suspend fun getProfile(id: String): User? {
+        return try {
+            val data = database.collection(KEY_USER)
+                .document(id)
+                .get()
+                .await()
+
+            data.toObject<UserResponse>()?.run {
+                if (isValid())
+                    mapToUser()
+                else
+                    null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun getProfiles(ids: List<String>): List<User> {
+        return try {
+            val data = database.collection(KEY_USER)
+                .whereIn("id", ids)
+                .get()
+                .await()
+
+            data.toObjects<UserResponse>()
+                .filter(UserResponse::isValid)
+                .map(UserResponse::mapToUser)
+        } catch (e: Exception) {
+            listOf()
+        }
+    }
+
+    override suspend fun getUserGroups(userId: String): List<Group> {
+        return try {
+            val data = database.collection(KEY_GROUP)
+                .whereArrayContains("usersIds", userId)
+                .get()
+                .await()
+
+            data.toObjects<GroupResponse>()
+                .filter(GroupResponse::isValid)
+                .map(GroupResponse::mapToGroup)
+
+        } catch (e: Exception) {
+            listOf()
+        }
     }
 
     override fun getGroup(groupId: String, onResult: (Group) -> Unit) {
@@ -93,10 +146,6 @@ class FirebaseFirestoreManager @Inject constructor(
     }
 
     override fun addNewGroup(group: Group, onResult: (Boolean) -> Unit) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getUserGroups(id: String, omResult: (List<Group>) -> Unit) {
         TODO("Not yet implemented")
     }
 }

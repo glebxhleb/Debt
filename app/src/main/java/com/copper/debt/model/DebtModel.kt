@@ -13,7 +13,8 @@ data class DebtResponse(
     val lastChangerId: String = "",
     val lastChangeDate: String = "",
     val status: String = "",
-    val currency: String = ""
+    val currency: String = "",
+    val debtId: String = ""
 )
 
 fun DebtResponse.isValid() = groupId.isNotBlank()
@@ -26,9 +27,9 @@ fun DebtResponse.isValid() = groupId.isNotBlank()
         && lastChangeDate.isNotBlank()
         && status.isNotBlank()
         && currency.isNotBlank()
+        && debtId.isNotBlank()
 
-fun DebtResponse.mapToDebt(firebaseId: String) = Debt(
-    firebaseId,
+fun DebtResponse.mapToDebt() = Debt(
     groupId,
     creditorId,
     creditorName,
@@ -38,11 +39,11 @@ fun DebtResponse.mapToDebt(firebaseId: String) = Debt(
     lastChangerId,
     lastChangeDate,
     Status.valueOf(status),
-    Currency.getInstance(currency)
+    Currency.getInstance(currency),
+    debtId
 )
 
 data class Debt(
-    val id: String,
     val groupId: String,
     val creditorId: String,
     val creditorName: String,
@@ -52,7 +53,8 @@ data class Debt(
     val lastChangerId: String,
     val lastChangeDate: String,
     val status: Status,
-    val currency: Currency
+    val currency: Currency,
+    val id: String = UUID.randomUUID().toString()
 )
 
 fun Debt.mapToRequest(): HashMap<String, Any> {
@@ -67,6 +69,7 @@ fun Debt.mapToRequest(): HashMap<String, Any> {
     request["lastChangeDate"] = lastChangeDate
     request["status"] = status.toString()
     request["currency"] = currency.currencyCode
+    request["debtId"] = id
     return request
 }
 

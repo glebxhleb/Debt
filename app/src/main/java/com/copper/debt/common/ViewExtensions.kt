@@ -42,7 +42,7 @@ inline fun <reified T> Spinner.onItemSelected(crossinline onItemChangeHandler: (
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             if (parent?.getItemAtPosition(position) is T)
-                onItemChangeHandler(parent.getItemAtPosition(position)as T)
+                onItemChangeHandler(parent?.getItemAtPosition(position)as T)
         }
     }
 }

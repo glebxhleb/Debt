@@ -1,5 +1,7 @@
 package com.copper.debt.presentation.implementation
 
+import android.util.Log
+import com.copper.debt.App
 import com.copper.debt.common.getFormatTime
 import com.copper.debt.common.isValidDebt
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
@@ -7,6 +9,7 @@ import com.copper.debt.firebase.database.FirebaseDatabaseInterface
 import com.copper.debt.model.*
 import com.copper.debt.presentation.AddDebtPresenter
 import com.copper.debt.ui.addDebt.AddDebtView
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -17,52 +20,95 @@ class AddDebtPresenterImpl @Inject constructor(
 ) : AddDebtPresenter {
     private lateinit var view: AddDebtView
 
+    private lateinit var currentUser: User
     private var userGroups = listOf<Group>()
-    private var groupUsers = mutableMapOf<String, User>()
+    private var groupUsers = mapOf<String, User>()
     private var debtors = mutableListOf<Debtor>()
 
-    private var groupId = ""
+    private var groupId = NO_GROUP_ID
     private var debtText = ""
     private var debtorsIds = mutableMapOf<String, Double>()
-    private var creditorId = ""
+    private var creditorId = NO_USER_ID
     private var debtDate = Calendar.getInstance()
     private var currency = Currency.getInstance(Locale("ru", "RU"))
     private var fixedSum = 0.0
 
 
-    override fun viewReady() {
+    override fun fetchData() = runBlocking {
+        GlobalScope.launch {
+            currentUser =
+                databaseInterface.getProfile(authenticationInterface.getUserId()) ?: return@launch
+            Log.d("coroutines log", "before loading")
+            val groups = fetchGroups()
+            val users = async { fetchGroupUsers(groups) }
 
+            fillFields(groups, users.await())
+        }
     }
 
-    private fun getGroups() {
-        databaseInterface.getUserGroups(authenticationInterface.getUserId()) { groups ->
+    private fun fillFields(groups: List<Group>, users: Map<String, User>) = runBlocking {
+        launch(Dispatchers.Main) {
             userGroups = groups
-        }
-    }
+            groupUsers = users
 
-    private fun onContactsGroupSelected() {
-        databaseInterface.getProfile(authenticationInterface.getUserId()) { currentUser ->
-            groupUsers.clear()
+            view.showDescription(debtText)
+            view.showSum(fixedSum)
+            view.showDate(debtDate.getFormatTime())
 
-            currentUser.contactsIds.map {
-                databaseInterface.getProfile(it) { user -> groupUsers[it] = user }
+            view.showGroupOptions(userGroups, groupId) { group ->
+                onGroupSelected(group)
             }
+            view.showCreditorOptions(groupUsers.values.toList(), creditorId) { creditor ->
+                onCreditorChanged(creditor)
+            }
+            view.showCurrencyOptions(
+                listOf("RUB", "EUR", "USD"),
+                currency.currencyCode
+            ) { currency -> onCurrencyChanged(currency) }
         }
     }
 
-    private fun onGroupSelected(group: Group) {
-        groupUsers.clear()
-
-        group.users.map {
-            databaseInterface.getProfile(it) { user -> groupUsers[it] = user }
+    private fun onGroupSelected(group: Group) = runBlocking {
+        launch {
+            val users = mutableMapOf<String, User>()
+            databaseInterface.getProfiles(group.users).forEach {
+                Log.d("coroutines log", it.toString())
+                users[it.id] = it
+            }
+            groupId = group.id
+            groupUsers = users
         }
+    }
+
+    private suspend fun fetchGroups(): List<Group> {
+        val mutGroups = mutableListOf<Group>()
+        Log.d("coroutines log", "before loading groups")
+        mutGroups.add(Group(App.instance.getString(NO_GROUP), currentUser.contactsIds, NO_GROUP_ID))
+        mutGroups.addAll(databaseInterface.getUserGroups(currentUser.id))
+        Log.d("coroutines log", "after loading users")
+        return mutGroups
+    }
+
+    private suspend fun fetchGroupUsers(groups: List<Group>): Map<String, User> {
+        val users = mutableMapOf<String, User>()
+        Log.d("coroutines log", "before loading users")
+        users[NO_USER_ID] = User("", "", listOf(), NO_USER_ID)
+        val currentGroup = groups.findLast { it.id == groupId } ?: Group(
+            App.instance.getString(NO_GROUP),
+            currentUser.contactsIds,
+            NO_GROUP_ID
+        )
+        databaseInterface.getProfiles(currentGroup.users).forEach {
+            Log.d("coroutines log", it.toString())
+            users[it.id] = it
+        }
+        return users
     }
 
     override fun addDebtTapped() {
         if (isValidDebt(debtText)) {
             val creditorName = groupUsers[creditorId]?.username ?: ""
             val debt = Debt(
-                "",
                 groupId,
                 creditorId,
                 creditorName,
@@ -97,20 +143,11 @@ class AddDebtPresenterImpl @Inject constructor(
         }
     }
 
-    override fun onGroupChanged(group: Group) {
-        groupId = group.id
-        if (groupId == NO_GROUP_ID) {
-            onContactsGroupSelected()
-        } else {
-            onGroupSelected(group)
-        }
-    }
-
     override fun dateChangeTapped() {
         val year = debtDate[Calendar.YEAR]
         val month = debtDate[Calendar.MONTH]
         val day = debtDate[Calendar.DAY_OF_MONTH]
-        view.showDatePickerDialog(year, month, day)
+        view.showDatePickerDialog(year, month, day) { y, m, d -> onDateSet(y, m, d) }
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
@@ -119,7 +156,7 @@ class AddDebtPresenterImpl @Inject constructor(
         debtDate.set(Calendar.DAY_OF_MONTH, day)
     }
 
-    override fun onCreditorChanged(creditor: User) {
+    private fun onCreditorChanged(creditor: User) {
         creditorId = creditor.id
     }
 
@@ -127,7 +164,7 @@ class AddDebtPresenterImpl @Inject constructor(
         fixedSum = sum
     }
 
-    override fun onCurrencyChanged(currencyCode: String) {
+    private fun onCurrencyChanged(currencyCode: String) {
         this.currency = Currency.getInstance(currencyCode)
     }
 
@@ -145,15 +182,15 @@ class AddDebtPresenterImpl @Inject constructor(
         view.showAddDebtorsDialog(availableUsers, involvedUsers)
     }
 
-    override fun addDebtorSelected(newDebtor: User) {
-        val debtor = Debtor(newDebtor)
-        debtors.add(debtor)
-        view.addDebtor(debtor)
-    }
-
-    override fun removeDebtorSelected(userId: String) {
-        debtors.removeAll { it.user.id == userId }
-        view.removeDebtor(userId)
+    override fun onDebtorChecked(debtor: User, isChecked: Boolean) {
+        if (isChecked) {
+            val newDebtor = Debtor(debtor)
+            debtors.add(newDebtor)
+            view.addDebtor(newDebtor)
+        } else {
+            debtors.removeAll { it.user == debtor }
+            view.removeDebtor(debtor.id)
+        }
     }
 
     override fun setView(view: AddDebtView) {

@@ -5,7 +5,7 @@ import com.copper.debt.model.Group
 import com.copper.debt.model.User
 
 
-interface FirebaseDatabaseInterface  {
+interface FirebaseDatabaseInterface {
 
     fun listenToDebts(onResult: (Debt) -> Unit)
 
@@ -13,7 +13,7 @@ interface FirebaseDatabaseInterface  {
 
     fun getMyDebts(userId: String, onResult: (List<Debt>) -> Unit)
 
-    fun createUser(id: String, name: String, email: String)
+    fun createUser(id: String, name: String, email: String, onResult: () -> Unit)
 
     fun getProfile(id: String, onResult: (User) -> Unit)
 
@@ -21,5 +21,9 @@ interface FirebaseDatabaseInterface  {
 
     fun addNewGroup(group: Group, onResult: (Boolean) -> Unit)
 
-    fun getUserGroups(id: String, omResult: (List<Group>) -> Unit)
+    suspend fun getUserGroups(userId: String): List<Group>
+
+    suspend fun getProfile(id: String): User?
+
+    suspend fun getProfiles(ids: List<String>): List<User>
 }

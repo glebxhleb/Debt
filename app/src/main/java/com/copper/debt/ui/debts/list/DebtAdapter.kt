@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.copper.debt.R
 import com.copper.debt.model.Debt
 
-class DebtAdapter() : RecyclerView.Adapter<DebtHolder>() {
+class DebtAdapter : RecyclerView.Adapter<DebtHolder>() {
 
   private val items = mutableListOf<Debt>()
 

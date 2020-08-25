@@ -28,6 +28,7 @@
     <string name="favorite_button">favorite button</string>
     <string name="add_debt_button">add debt button</string>
     <string name="without_group">Без группы</string>
+    <string name="debtors">Участники</string>
 
 
     <string-array name="currency">

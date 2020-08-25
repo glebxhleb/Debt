@@ -15,7 +15,16 @@ interface AddDebtView {
 
     fun removeDebtError()
 
-    fun showDatePickerDialog(initYear: Int, initMonth: Int, initDay: Int)
+    fun showDatePickerDialog(
+        initYear: Int,
+        initMonth: Int,
+        initDay: Int,
+        onSelect: (
+            year: Int,
+            month: Int,
+            day: Int
+        ) -> Unit
+    )
 
     fun showAddDebtorsDialog(groupUsers: List<User>, involvedUsers: List<User>)
 
@@ -25,13 +34,21 @@ interface AddDebtView {
 
     fun showDescription(text: String)
 
-    fun showGroupOptions(groups: List<Group>, currentGroup: String)
+    fun showGroupOptions(groups: List<Group>, currentGroup: String, onSelect: (Group) -> Unit)
 
     fun showDate(dateText: String)
 
-    fun showCreditorOptions(groupUsers: List<User>, currentCreditor: String)
+    fun showCreditorOptions(
+        groupUsers: List<User>,
+        currentCreditor: String,
+        onSelect: (User) -> Unit
+    )
 
     fun showSum(sum: Double)
 
-    fun showCurrencyOptions(currencies: List<String>, currentCurrency: String)
+    fun showCurrencyOptions(
+        currencies: List<String>,
+        currentCurrency: String,
+        onSelect: (String) -> Unit
+    )
 }

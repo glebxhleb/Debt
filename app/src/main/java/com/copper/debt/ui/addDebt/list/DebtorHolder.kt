@@ -1,3 +1,5 @@
+package com.copper.debt.ui.addDebt.list
+
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.copper.debt.common.onTextChanged
@@ -11,7 +13,7 @@ class DebtorHolder(
 
     fun bind(debtor: Debtor) = with(itemView) {
 
-        debtorName.text = debtor.name
+        debtorName.text = debtor.user.username
         if (debtor.sum > 0) debtorSum.setText(debtor.sum.toString())
 
         debtorSum.onTextChanged {

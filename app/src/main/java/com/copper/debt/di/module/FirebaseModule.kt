@@ -17,8 +17,5 @@ class FirebaseModule {
     fun firebaseAuth() : FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
-    fun firebaseDatabase() : FirebaseDatabase = FirebaseDatabase.getInstance()
-
-    @Provides
     fun firebaseFirestore() : FirebaseFirestore = Firebase.firestore
 }

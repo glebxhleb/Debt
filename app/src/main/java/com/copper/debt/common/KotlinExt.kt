@@ -10,5 +10,5 @@ val dataDateFormat = SimpleDateFormat(datePattern, Locale.ENGLISH)
 
 
 fun Calendar.getFormatTime(): String {
-    return dataDateFormat.format(this)
+    return dataDateFormat.format(this.time)
 }
