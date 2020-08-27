@@ -135,7 +135,6 @@ class FirebaseFirestoreManager @Inject constructor(
             data.toObjects<GroupResponse>()
                 .filter(GroupResponse::isValid)
                 .map(GroupResponse::mapToGroup)
-
         } catch (e: Exception) {
             listOf()
         }

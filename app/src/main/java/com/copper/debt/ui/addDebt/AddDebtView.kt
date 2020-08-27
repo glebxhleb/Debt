@@ -30,7 +30,7 @@ interface AddDebtView {
 
     fun addDebtor(debtor: Debtor)
 
-    fun removeDebtor(id: String)
+    fun removeDebtor(debtor: Debtor)
 
     fun showDescription(text: String)
 

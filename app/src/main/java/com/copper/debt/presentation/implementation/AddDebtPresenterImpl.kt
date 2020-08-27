@@ -33,73 +33,80 @@ class AddDebtPresenterImpl @Inject constructor(
     private var currency = Currency.getInstance(Locale("ru", "RU"))
     private var fixedSum = 0.0
 
+    private val presenterJob = Job()
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + presenterJob)
+
 
     override fun fetchData() = runBlocking {
-        GlobalScope.launch {
+        coroutineScope.launch {
+
             currentUser =
                 databaseInterface.getProfile(authenticationInterface.getUserId()) ?: return@launch
-            Log.d("coroutines log", "before loading")
-            val groups = fetchGroups()
-            val users = async { fetchGroupUsers(groups) }
 
-            fillFields(groups, users.await())
+            val groups = withContext(Dispatchers.IO) { fetchGroups() }
+            val users = withContext(Dispatchers.IO) { fetchGroupUsers(groups) }
+
+            fillFields(groups, users)
         }
     }
 
-    private fun fillFields(groups: List<Group>, users: Map<String, User>) = runBlocking {
-        launch(Dispatchers.Main) {
-            userGroups = groups
-            groupUsers = users
+    private fun fillFields(groups: List<Group>, users: Map<String, User>) {
+        userGroups = groups
+        groupUsers = users
 
-            view.showDescription(debtText)
-            view.showSum(fixedSum)
-            view.showDate(debtDate.getFormatTime())
+        view.showDescription(debtText)
+        view.showSum(fixedSum)
+        view.showDate(debtDate.getFormatTime())
 
-            view.showGroupOptions(userGroups, groupId) { group ->
-                onGroupSelected(group)
-            }
-            view.showCreditorOptions(groupUsers.values.toList(), creditorId) { creditor ->
-                onCreditorChanged(creditor)
-            }
-            view.showCurrencyOptions(
-                listOf("RUB", "EUR", "USD"),
-                currency.currencyCode
-            ) { currency -> onCurrencyChanged(currency) }
+        view.showGroupOptions(userGroups, groupId) { group ->
+            onGroupSelected(group)
         }
+        view.showCreditorOptions(groupUsers.values.toList(), creditorId) { creditor ->
+            onCreditorChanged(creditor)
+        }
+        view.showCurrencyOptions(
+            listOf("RUB", "EUR", "USD"),
+            currency.currencyCode
+        ) { currency -> onCurrencyChanged(currency) }
     }
 
     private fun onGroupSelected(group: Group) = runBlocking {
-        launch {
+        coroutineScope.launch {
             val users = mutableMapOf<String, User>()
-            databaseInterface.getProfiles(group.users).forEach {
-                Log.d("coroutines log", it.toString())
-                users[it.id] = it
+            users[currentUser.id] = currentUser
+
+            withContext(Dispatchers.IO) {
+                databaseInterface.getProfiles(group.users).forEach {
+                    users[it.id] = it
+                }
             }
             groupId = group.id
             groupUsers = users
+
+            view.showCreditorOptions(groupUsers.values.toList(), creditorId) { creditor ->
+                onCreditorChanged(creditor)
+            }
+
         }
     }
 
     private suspend fun fetchGroups(): List<Group> {
         val mutGroups = mutableListOf<Group>()
-        Log.d("coroutines log", "before loading groups")
         mutGroups.add(Group(App.instance.getString(NO_GROUP), currentUser.contactsIds, NO_GROUP_ID))
         mutGroups.addAll(databaseInterface.getUserGroups(currentUser.id))
-        Log.d("coroutines log", "after loading users")
         return mutGroups
     }
 
     private suspend fun fetchGroupUsers(groups: List<Group>): Map<String, User> {
         val users = mutableMapOf<String, User>()
-        Log.d("coroutines log", "before loading users")
-        users[NO_USER_ID] = User("", "", listOf(), NO_USER_ID)
+        users[currentUser.id] = currentUser
         val currentGroup = groups.findLast { it.id == groupId } ?: Group(
             App.instance.getString(NO_GROUP),
             currentUser.contactsIds,
             NO_GROUP_ID
         )
         databaseInterface.getProfiles(currentGroup.users).forEach {
-            Log.d("coroutines log", it.toString())
             users[it.id] = it
         }
         return users
@@ -125,14 +132,6 @@ class AddDebtPresenterImpl @Inject constructor(
         }
     }
 
-    private fun onAddDebtResult(isSuccessful: Boolean) {
-        if (isSuccessful) {
-            view.onDebtAdded()
-        } else {
-            view.showAddDebtError()
-        }
-    }
-
     override fun onDebtTextChanged(debtText: String) {
         this.debtText = debtText
 
@@ -150,22 +149,8 @@ class AddDebtPresenterImpl @Inject constructor(
         view.showDatePickerDialog(year, month, day) { y, m, d -> onDateSet(y, m, d) }
     }
 
-    override fun onDateSet(year: Int, month: Int, day: Int) {
-        debtDate.set(Calendar.YEAR, year)
-        debtDate.set(Calendar.MONTH, month)
-        debtDate.set(Calendar.DAY_OF_MONTH, day)
-    }
-
-    private fun onCreditorChanged(creditor: User) {
-        creditorId = creditor.id
-    }
-
     override fun onSumChanged(sum: Double) {
         fixedSum = sum
-    }
-
-    private fun onCurrencyChanged(currencyCode: String) {
-        this.currency = Currency.getInstance(currencyCode)
     }
 
     override fun equalCalcTapped() {
@@ -189,11 +174,38 @@ class AddDebtPresenterImpl @Inject constructor(
             view.addDebtor(newDebtor)
         } else {
             debtors.removeAll { it.user == debtor }
-            view.removeDebtor(debtor.id)
+            view.removeDebtor(Debtor(debtor))
         }
     }
 
     override fun setView(view: AddDebtView) {
         this.view = view
+    }
+
+    private fun onCreditorChanged(creditor: User) {
+        creditorId = creditor.id
+    }
+
+    private fun onCurrencyChanged(currencyCode: String) {
+        this.currency = Currency.getInstance(currencyCode)
+    }
+
+    private fun onDateSet(year: Int, month: Int, day: Int) {
+        debtDate.set(Calendar.YEAR, year)
+        debtDate.set(Calendar.MONTH, month)
+        debtDate.set(Calendar.DAY_OF_MONTH, day)
+        view.showDate(debtDate.getFormatTime())
+    }
+
+    private fun onAddDebtResult(isSuccessful: Boolean) {
+        if (isSuccessful) {
+            view.onDebtAdded()
+        } else {
+            view.showAddDebtError()
+        }
+    }
+
+    fun onStop() {
+        presenterJob.cancel()
     }
 }

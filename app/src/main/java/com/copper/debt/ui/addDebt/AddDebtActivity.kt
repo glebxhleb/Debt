@@ -19,16 +19,13 @@ import com.copper.debt.ui.addDebt.dialog.CheckDebtorsAdapter
 import com.copper.debt.ui.addDebt.dialog.CheckDebtorsDialog
 import com.copper.debt.ui.addDebt.list.DebtorAdapter
 import kotlinx.android.synthetic.main.activity_add_debt.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
 class AddDebtActivity : AppCompatActivity(), AddDebtView {
 
     private val presenter by lazy { addDebtPresenter() }
-    private val adapter = DebtorAdapter()
+    private lateinit var adapter : DebtorAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +41,9 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
 //        addDebt.onClick { presenter.addDebtTapped() }
         addDebtor.onClick { presenter.addDebtorsTapped() }
         date.onClick { presenter.dateChangeTapped() }
-        debtors.layoutManager = LinearLayoutManager(this)
-        debtors.adapter = adapter
-
+//        debtors.layoutManager = LinearLayoutManager(this)
+        adapter = DebtorAdapter(debtors)
+//        debtors.adapter = adapter
     }
 
     override fun onDebtAdded() = finish()
@@ -97,8 +94,8 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         adapter.addDebtor(debtor)
     }
 
-    override fun removeDebtor(id: String) {
-        adapter.removeDebtor(id)
+    override fun removeDebtor(debtor: Debtor) {
+        adapter.removeDebtor(debtor)
     }
 
 
