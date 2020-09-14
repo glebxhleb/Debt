@@ -10,7 +10,12 @@ import com.copper.debt.R
 import com.copper.debt.model.Debtor
 import kotlinx.android.synthetic.main.item_debtor_sum.view.*
 
-class DebtorAdapter(val layout: LinearLayout) {
+class DebtorAdapter {
+    lateinit var layout: LinearLayout
+
+    fun initLayout(layout: LinearLayout) {
+        this.layout = layout
+    }
 
     private val items = mutableMapOf<Debtor, Int>()
 

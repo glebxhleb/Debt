@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.copper.debt.R
 import kotlinx.android.synthetic.main.dialog_check_debtors.*
 
-class CheckDebtorsDialog(
+class SelectDebtorsDialog(
     context: Context,
-    private val adapter: CheckDebtorsAdapter
+    private val adapter: SelectDebtorsAdapter
 ) : Dialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

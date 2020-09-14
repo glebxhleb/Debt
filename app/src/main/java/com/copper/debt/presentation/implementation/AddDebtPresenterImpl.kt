@@ -1,6 +1,5 @@
 package com.copper.debt.presentation.implementation
 
-import android.util.Log
 import com.copper.debt.App
 import com.copper.debt.common.getFormatTime
 import com.copper.debt.common.isValidDebt
@@ -34,7 +33,6 @@ class AddDebtPresenterImpl @Inject constructor(
     private var fixedSum = 0.0
 
     private val presenterJob = Job()
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main + presenterJob)
 
 

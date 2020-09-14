@@ -6,7 +6,7 @@ import com.copper.debt.model.User
 import kotlinx.android.synthetic.main.item_debtor_add.view.*
 
 
-class CheckDebtorsHolder(
+class SelectDebtorsHolder(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 

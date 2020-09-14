@@ -22,7 +22,7 @@ abstract class PresentationModule {
   abstract fun profilePresenter(profilePresenterImpl: ProfilePresenterImpl): ProfilePresenter
 
   @Binds
-  abstract fun addDebtPresenter(addJokePresenterImpl: AddDebtPresenterImpl): AddDebtPresenter
+  abstract fun addDebtPresenter(addDebtPresenterImpl: AddDebtPresenterImpl): AddDebtPresenter
 
   @Binds
   abstract fun welcomePresenter(welcomePresenterImpl: WelcomePresenterImpl): WelcomePresenter

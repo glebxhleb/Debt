@@ -5,19 +5,19 @@ import android.os.Bundle
 
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.copper.debt.R
 import com.copper.debt.addDebtPresenter
 import com.copper.debt.common.onClick
 import com.copper.debt.common.onItemSelected
 import com.copper.debt.common.onTextChanged
 import com.copper.debt.common.showGeneralError
+import com.copper.debt.debtorAdapter
 import com.copper.debt.model.Debtor
 import com.copper.debt.model.Group
 import com.copper.debt.model.User
-import com.copper.debt.ui.addDebt.dialog.CheckDebtorsAdapter
-import com.copper.debt.ui.addDebt.dialog.CheckDebtorsDialog
-import com.copper.debt.ui.addDebt.list.DebtorAdapter
+import com.copper.debt.selectDebtorsAdapter
+import com.copper.debt.ui.addDebt.dialog.SelectDebtorsAdapter
+import com.copper.debt.ui.addDebt.dialog.SelectDebtorsDialog
 import kotlinx.android.synthetic.main.activity_add_debt.*
 import java.util.*
 
@@ -25,7 +25,8 @@ import java.util.*
 class AddDebtActivity : AppCompatActivity(), AddDebtView {
 
     private val presenter by lazy { addDebtPresenter() }
-    private lateinit var adapter : DebtorAdapter
+    private val debtorAdapter by lazy { debtorAdapter() }
+    private val selectDebtorsAdapter by lazy { selectDebtorsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +39,9 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
 
     private fun initUi() {
         debtDescription.onTextChanged { presenter.onDebtTextChanged(it) }
-//        addDebt.onClick { presenter.addDebtTapped() }
         addDebtor.onClick { presenter.addDebtorsTapped() }
         date.onClick { presenter.dateChangeTapped() }
-//        debtors.layoutManager = LinearLayoutManager(this)
-        adapter = DebtorAdapter(debtors)
-//        debtors.adapter = adapter
+        debtorAdapter.initLayout(debtors)
     }
 
     override fun onDebtAdded() = finish()
@@ -82,20 +80,19 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         groupUsers: List<User>,
         involvedUsers: List<User>
     ) {
-        val adapter = CheckDebtorsAdapter(groupUsers, involvedUsers)
+        selectDebtorsAdapter.setItems(groupUsers, involvedUsers)
         { user, isChecked -> presenter.onDebtorChecked(user, isChecked) }
 
-        val dialog = CheckDebtorsDialog(this, adapter)
-
+        val dialog = SelectDebtorsDialog(this, selectDebtorsAdapter)
         dialog.show()
     }
 
     override fun addDebtor(debtor: Debtor) {
-        adapter.addDebtor(debtor)
+        debtorAdapter.addDebtor(debtor)
     }
 
     override fun removeDebtor(debtor: Debtor) {
-        adapter.removeDebtor(debtor)
+        debtorAdapter.removeDebtor(debtor)
     }
 
 
