@@ -19,7 +19,7 @@ class FirebaseFirestoreManager @Inject constructor(
     private val database: FirebaseFirestore
 ) : FirebaseDatabaseInterface {
 
-    override fun listenToDebts(onResult: (Debt) -> Unit) {
+    override fun listenToDebts(onResult: (Debt, Status) -> Unit) {
         database.collection(KEY_DEBT)
             .addSnapshotListener { value, e ->
                 if (e != null) {
@@ -29,19 +29,15 @@ class FirebaseFirestoreManager @Inject constructor(
 
                 for (doc in value!!.documentChanges) {
 
-                    when (doc.type) {
-                        DocumentChange.Type.ADDED -> {
-                            doc.document.toObject<DebtResponse>().run {
-                                if (isValid()) {
-                                    onResult(mapToDebt())
-                                }
-                            }
-                        }
-                        DocumentChange.Type.MODIFIED -> {
+                    val status = when (doc.type) {
+                        DocumentChange.Type.ADDED -> Status.ADDED
+                        DocumentChange.Type.MODIFIED -> Status.CHANGED
+                        DocumentChange.Type.REMOVED -> Status.REMOVED
+                    }
 
-                        }
-                        DocumentChange.Type.REMOVED -> {
-
+                    doc.document.toObject<DebtResponse>().run {
+                        if (isValid()) {
+                            onResult(mapToDebt(), status)
                         }
                     }
                 }

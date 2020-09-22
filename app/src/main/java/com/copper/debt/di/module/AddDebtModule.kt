@@ -4,7 +4,6 @@ import com.copper.debt.ui.addDebt.dialog.SelectDebtorsAdapter
 import com.copper.debt.ui.addDebt.list.DebtorAdapter
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 
 @Module

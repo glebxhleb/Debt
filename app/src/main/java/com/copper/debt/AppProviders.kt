@@ -18,3 +18,5 @@ fun welcomePresenter() = component().welcomePresenter()
 fun debtorAdapter() = component().debtorAdapter()
 
 fun selectDebtorsAdapter() = component().selectDebtorsAdapter()
+
+fun debtAdapter() = component().debtAdapter()

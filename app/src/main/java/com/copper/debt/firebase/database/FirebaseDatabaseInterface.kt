@@ -2,12 +2,13 @@ package com.copper.debt.firebase.database
 
 import com.copper.debt.model.Debt
 import com.copper.debt.model.Group
+import com.copper.debt.model.Status
 import com.copper.debt.model.User
 
 
 interface FirebaseDatabaseInterface {
 
-    fun listenToDebts(onResult: (Debt) -> Unit)
+    fun listenToDebts(onResult: (Debt,Status) -> Unit)
 
     fun addNewDebt(debt: Debt, onResult: (Boolean) -> Unit)
 

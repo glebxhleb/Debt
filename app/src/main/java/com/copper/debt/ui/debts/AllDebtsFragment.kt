@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.copper.debt.R
 import com.copper.debt.allDebtsPresenter
+import com.copper.debt.debtAdapter
 import com.copper.debt.model.Debt
 import com.copper.debt.ui.debts.list.DebtAdapter
 import kotlinx.android.synthetic.main.fragment_debts.*
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_debts.*
 class AllDebtsFragment : Fragment(), AllDebtsView {
 
     private val presenter by lazy { allDebtsPresenter() }
-    private var adapter = DebtAdapter()
+    private val adapter by lazy { debtAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +36,16 @@ class AllDebtsFragment : Fragment(), AllDebtsView {
 
     override fun addDebt(debt: Debt) {
         adapter.addDebt(debt)
-        noItems.visibility = if (adapter.itemCount!=0) View.INVISIBLE else View.VISIBLE
+        noItems.visibility = if (adapter.itemCount != 0) View.INVISIBLE else View.VISIBLE
+    }
+
+    override fun updateDebt(debt: Debt) {
+        adapter.updateDebt(debt)
+    }
+
+    override fun removeDebt(debt: Debt) {
+        adapter.removeDebt(debt)
+        noItems.visibility = if (adapter.itemCount != 0) View.INVISIBLE else View.VISIBLE
     }
 
     private fun initUi() {
@@ -49,6 +59,6 @@ class AllDebtsFragment : Fragment(), AllDebtsView {
     }
 
     override fun hideNoDataDescription() {
-        noItems.visibility  = View.GONE
+        noItems.visibility = View.GONE
     }
 }

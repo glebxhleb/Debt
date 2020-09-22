@@ -1,5 +1,6 @@
 package com.copper.debt.model
 
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -55,7 +56,7 @@ data class Debt(
     val status: Status,
     val currency: Currency,
     val id: String = UUID.randomUUID().toString()
-)
+) : Serializable
 
 fun Debt.mapToRequest(): HashMap<String, Any> {
     val request = HashMap<String, Any>()
@@ -73,7 +74,7 @@ fun Debt.mapToRequest(): HashMap<String, Any> {
     return request
 }
 
-enum class Status {
+enum class Status : Serializable {
     REMOVED,
     ADDED,
     CHANGED,

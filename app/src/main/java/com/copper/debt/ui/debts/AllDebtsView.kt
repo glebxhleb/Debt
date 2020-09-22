@@ -9,4 +9,8 @@ interface AllDebtsView {
     fun hideNoDataDescription()
 
     fun addDebt(debt: Debt)
+
+    fun updateDebt(debt: Debt)
+
+    fun removeDebt(debt: Debt)
 }

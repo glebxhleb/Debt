@@ -1,6 +1,9 @@
 package com.copper.debt.presentation.implementation
 
 import com.copper.debt.App
+import com.copper.debt.R
+import com.copper.debt.common.format
+import com.copper.debt.common.getCalendar
 import com.copper.debt.common.getFormatTime
 import com.copper.debt.common.isValidDebt
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
@@ -26,17 +29,32 @@ class AddDebtPresenterImpl @Inject constructor(
 
     private var groupId = NO_GROUP_ID
     private var debtText = ""
-    private var debtorsIds = mutableMapOf<String, Double>()
     private var creditorId = NO_USER_ID
     private var debtDate = Calendar.getInstance()
     private var currency = Currency.getInstance(Locale("ru", "RU"))
     private var fixedSum = 0.0
+    private var debtId =  UUID.randomUUID().toString()
+    private var status = Status.ADDED
 
     private val presenterJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + presenterJob)
 
 
-    override fun fetchData() = runBlocking {
+    override fun fetchData(debt: Debt?) = runBlocking {
+        if (debt != null){
+            groupId = debt.groupId
+            debtText = debt.text
+            creditorId = debt.creditorId
+            debtDate = debt.debtDate.getCalendar()
+            currency = debt.currency
+            fixedSum = debt.debtorsIds.map { entry -> entry.value }.sum()
+            debtId = debt.id
+            status = Status.CHANGED
+            view.setTitle(App.instance.getString(R.string.edit_debt))
+        } else {
+            view.setTitle(App.instance.getString(R.string.new_debt))
+        }
+
         coroutineScope.launch {
 
             currentUser =
@@ -45,11 +63,12 @@ class AddDebtPresenterImpl @Inject constructor(
             val groups = withContext(Dispatchers.IO) { fetchGroups() }
             val users = withContext(Dispatchers.IO) { fetchGroupUsers(groups) }
 
-            fillFields(groups, users)
+            fillFields(groups, users, debt?.debtorsIds)
+            view.showContent()
         }
     }
 
-    private fun fillFields(groups: List<Group>, users: Map<String, User>) {
+    private fun fillFields(groups: List<Group>, users: Map<String, User>, debtorsIds: Map<String, Double>?) {
         userGroups = groups
         groupUsers = users
 
@@ -67,6 +86,15 @@ class AddDebtPresenterImpl @Inject constructor(
             listOf("RUB", "EUR", "USD"),
             currency.currencyCode
         ) { currency -> onCurrencyChanged(currency) }
+
+        debtorsIds?.forEach{ (userId: String, sum: Double) ->
+            groupUsers[userId]?.let {
+                val debtor = Debtor(it)
+                debtor.sum = sum
+                view.addDebtor(debtor)
+                debtors.add(debtor)
+            }
+        }
     }
 
     private fun onGroupSelected(group: Group) = runBlocking {
@@ -85,7 +113,6 @@ class AddDebtPresenterImpl @Inject constructor(
             view.showCreditorOptions(groupUsers.values.toList(), creditorId) { creditor ->
                 onCreditorChanged(creditor)
             }
-
         }
     }
 
@@ -110,9 +137,11 @@ class AddDebtPresenterImpl @Inject constructor(
         return users
     }
 
-    override fun addDebtTapped() {
-        if (isValidDebt(debtText)) {
+    override fun saveDebtTapped() {
+        if (isValidDebt(fixedSum, debtors.map { it.sum })) {
+            view.removeDebtError()
             val creditorName = groupUsers[creditorId]?.username ?: ""
+            val debtorsIds = debtors.map { it.user.id to it.sum }.toMap()
             val debt = Debt(
                 groupId,
                 creditorId,
@@ -122,22 +151,19 @@ class AddDebtPresenterImpl @Inject constructor(
                 debtDate.getFormatTime(),
                 authenticationInterface.getUserId(),
                 Calendar.getInstance().getFormatTime(),
-                Status.ADDED,
-                currency
+                status,
+                currency,
+                debtId
             )
 
             databaseInterface.addNewDebt(debt) { onAddDebtResult(it) }
+        } else {
+            view.showDebtError()
         }
     }
 
     override fun onDebtTextChanged(debtText: String) {
         this.debtText = debtText
-
-        if (!isValidDebt(debtText)) {
-            view.showDebtError()
-        } else {
-            view.removeDebtError()
-        }
     }
 
     override fun dateChangeTapped() {
@@ -152,11 +178,19 @@ class AddDebtPresenterImpl @Inject constructor(
     }
 
     override fun equalCalcTapped() {
-        TODO("Not yet implemented")
+        if (fixedSum > 0 && debtors.isNotEmpty()) {
+            val num = fixedSum/debtors.size
+            debtors.forEach{
+               view.removeDebtor(it)
+                it.sum = num
+                view.addDebtor(it)
+            }
+        }
     }
 
     override fun sumCalcTapped() {
-        TODO("Not yet implemented")
+        fixedSum = debtors.map { it.sum }.sum()
+        view.showSum(fixedSum)
     }
 
     override fun addDebtorsTapped() {

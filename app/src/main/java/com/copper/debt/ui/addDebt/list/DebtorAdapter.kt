@@ -7,14 +7,22 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.copper.debt.R
+import com.copper.debt.common.format
+import com.copper.debt.common.onClick
+import com.copper.debt.common.onTextChanged
 import com.copper.debt.model.Debtor
+import com.copper.debt.model.User
+import com.copper.debt.presentation.AddDebtPresenter
+import kotlinx.android.synthetic.main.activity_add_debt.view.*
 import kotlinx.android.synthetic.main.item_debtor_sum.view.*
 
 class DebtorAdapter {
-    lateinit var layout: LinearLayout
+    private lateinit var layout: LinearLayout
+    private lateinit var onDebtorRemoved: (User) -> Unit
 
-    fun initLayout(layout: LinearLayout) {
+    fun initLayout(layout: LinearLayout, onDebtorRemoved: (User) -> Unit) {
         this.layout = layout
+        this.onDebtorRemoved = onDebtorRemoved
     }
 
     private val items = mutableMapOf<Debtor, Int>()
@@ -24,7 +32,19 @@ class DebtorAdapter {
 
         val view =
             LayoutInflater.from(layout.context).inflate(R.layout.item_debtor_sum, layout, false)
+
         view.debtorName.text = debtor.user.username
+        view.debtorSum.setText(
+            debtor.sum.format()
+        )
+        view.debtorSum.onTextChanged { s ->
+            debtor.sum = s.toDoubleOrNull() ?: 0.0
+        }
+        view.close.onClick {
+            removeDebtor(debtor)
+            onDebtorRemoved(debtor.user)
+        }
+
         val viewId = View.generateViewId()
         items[debtor] = viewId
         view.id = viewId

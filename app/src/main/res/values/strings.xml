@@ -22,14 +22,15 @@
     <string name="general_positive_button">OK</string>
     <string name="debt_text_hint">Enter your text</string>
     <string name="add_debt_text">Add debt</string>
-    <string name="debt_error">Each debt must have at least 10 characters</string>
+    <string name="debt_error">Сумма не сходится</string>
     <string name="email_empty_error">Email is empty</string>
     <string name="welcome_to_our_pun_ground">Welcome to our Pun-ground</string>
     <string name="favorite_button">favorite button</string>
     <string name="add_debt_button">add debt button</string>
     <string name="without_group">Без группы</string>
     <string name="debtors">Участники</string>
-
+    <string name="edit_debt">Редактирование события</string>
+    <string name="new_debt">Новое событие</string>
 
     <string-array name="currency">
         <item>₽</item>

@@ -2,10 +2,15 @@ package com.copper.debt.ui.addDebt
 
 import com.copper.debt.model.Debtor
 import com.copper.debt.model.Group
+import com.copper.debt.model.Status
 import com.copper.debt.model.User
 import java.util.*
 
 interface AddDebtView {
+
+    fun setTitle(newTitle: String)
+
+    fun showContent()
 
     fun onDebtAdded()
 
