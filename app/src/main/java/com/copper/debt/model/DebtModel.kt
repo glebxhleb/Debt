@@ -10,9 +10,9 @@ data class DebtResponse(
     val creditorName: String = "",
     val text: String = "",
     val debtorsIds: Map<String, Double> = mapOf(),
-    val debtDate: String = "",
+    val debtDate: Long = 0L,
     val lastChangerId: String = "",
-    val lastChangeDate: String = "",
+    val lastChangeDate: Long = 0L,
     val status: String = "",
     val currency: String = "",
     val debtId: String = ""
@@ -23,9 +23,9 @@ fun DebtResponse.isValid() = groupId.isNotBlank()
         && creditorName.isNotBlank()
         && text.isNotBlank()
         && debtorsIds.isNotEmpty()
-        && debtDate.isNotBlank()
+        && debtDate != 0L
         && lastChangerId.isNotBlank()
-        && lastChangeDate.isNotBlank()
+        && lastChangeDate != 0L
         && status.isNotBlank()
         && currency.isNotBlank()
         && debtId.isNotBlank()
@@ -50,9 +50,9 @@ data class Debt(
     val creditorName: String,
     val text: String,
     val debtorsIds: Map<String, Double>,
-    val debtDate: String,
+    val debtDate: Long,
     val lastChangerId: String,
-    val lastChangeDate: String,
+    val lastChangeDate: Long,
     val status: Status,
     val currency: Currency,
     val id: String = UUID.randomUUID().toString()

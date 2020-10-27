@@ -38,7 +38,7 @@
                     style="@style/InputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:hint="Описание"
+                    android:hint="@string/description"
                     android:imeOptions="actionNone" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Группа"
+                        android:text="@string/group"
                         app:layout_constraintBottom_toTopOf="@+id/bottom_line0"
                         app:layout_constraintStart_toStartOf="parent" />
 
@@ -107,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Дата"
+                        android:text="@string/date"
                         app:layout_constraintBottom_toTopOf="@+id/bottom_line1"
                         app:layout_constraintStart_toStartOf="parent" />
 
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Платил"
+                        android:text="@string/payed"
                         app:layout_constraintBottom_toTopOf="@+id/bottom_line2"
                         app:layout_constraintStart_toStartOf="parent" />
 
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Сумма"
+                        android:text="@string/sum"
                         app:layout_constraintBottom_toTopOf="@+id/bottom_line3"
                         app:layout_constraintStart_toStartOf="parent" />
 
@@ -227,7 +227,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
-                        android:text="Поровну" />
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="@string/equal" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/addDebtor"
@@ -241,7 +242,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
-                        android:text="Посчитать" />
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="@string/calc" />
 
                 </LinearLayout>
 

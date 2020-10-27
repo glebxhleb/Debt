@@ -43,20 +43,20 @@ class MainActivity : AppCompatActivity() {
     mainPager.adapter = adapter
 
     mainPager.offscreenPageLimit = 3
-    bottomNavigation.setOnNavigationItemSelectedListener {
-      switchNavigationTab(it.order)
-      true
-    }
+//    bottomNavigation.setOnNavigationItemSelectedListener {
+//      switchNavigationTab(it.order)
+//      true
+//    }
 
-    mainPager.onPageChange { position ->
-      val item = bottomNavigation.menu.getItem(position)
+//    mainPager.onPageChange { position ->
+//      val item = bottomNavigation.menu.getItem(position)
+//
+//      bottomNavigation.selectedItemId = item.itemId
+//    }
 
-      bottomNavigation.selectedItemId = item.itemId
-    }
-
-    addDebt.onClick {
-      startActivity(Intent(this, AddDebtActivity::class.java))
-    }
+//    addDebt.onClick {
+//      startActivity(Intent(this, AddDebtActivity::class.java))
+//    }
   }
 
   private fun switchNavigationTab(position: Int) = mainPager.setCurrentItem(position, true)

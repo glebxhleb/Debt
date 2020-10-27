@@ -1,7 +1,9 @@
 package com.copper.debt.ui.addDebt
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -52,7 +54,7 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
     private fun initUi() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
         debtDescription.onTextChanged { presenter.onDebtTextChanged(it) }
         addDebtor.onClick { presenter.addDebtorsTapped() }
         date.onClick { presenter.dateChangeTapped() }
@@ -190,5 +192,29 @@ class AddDebtActivity : AppCompatActivity(), AddDebtView {
         currency.onItemSelected { selectedCurrency: String ->
             onSelect(selectedCurrency)
         }
+    }
+
+    override fun onBackPressed() {
+        presenter.onBackPressed() { isChanged ->
+            if (isChanged) {
+                showSaveDialog()
+            } else {
+                super.onBackPressed()
+            }
+        }
+    }
+
+    private fun showSaveDialog() {
+        val builder = AlertDialog.Builder(this)
+            .setTitle("Сохранить изменения?")
+            .setPositiveButton("Да") { dialog, _ ->
+                presenter.saveDebtTapped()
+                dialog.cancel()
+            }
+            .setNegativeButton("Нет") { _, _ ->
+                this.finish()
+            }
+        builder.create().show()
+
     }
 }

@@ -2,10 +2,7 @@ package com.copper.debt.presentation.implementation
 
 import com.copper.debt.App
 import com.copper.debt.R
-import com.copper.debt.common.format
-import com.copper.debt.common.getCalendar
-import com.copper.debt.common.getFormatTime
-import com.copper.debt.common.isValidDebt
+import com.copper.debt.common.*
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
 import com.copper.debt.firebase.database.FirebaseDatabaseInterface
 import com.copper.debt.model.*
@@ -30,22 +27,25 @@ class AddDebtPresenterImpl @Inject constructor(
     private var groupId = NO_GROUP_ID
     private var debtText = ""
     private var creditorId = NO_USER_ID
-    private var debtDate = Calendar.getInstance()
+    private var debtDate = Calendar.getInstance().timeInMillis
     private var currency = Currency.getInstance(Locale("ru", "RU"))
     private var fixedSum = 0.0
-    private var debtId =  UUID.randomUUID().toString()
+    private var debtId = UUID.randomUUID().toString()
     private var status = Status.ADDED
+
+    private var oldDebt: Debt? = null
 
     private val presenterJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Main + presenterJob)
 
 
     override fun fetchData(debt: Debt?) = runBlocking {
-        if (debt != null){
+        oldDebt = debt
+        if (debt != null) {
             groupId = debt.groupId
             debtText = debt.text
             creditorId = debt.creditorId
-            debtDate = debt.debtDate.getCalendar()
+            debtDate = debt.debtDate
             currency = debt.currency
             fixedSum = debt.debtorsIds.map { entry -> entry.value }.sum()
             debtId = debt.id
@@ -68,13 +68,17 @@ class AddDebtPresenterImpl @Inject constructor(
         }
     }
 
-    private fun fillFields(groups: List<Group>, users: Map<String, User>, debtorsIds: Map<String, Double>?) {
+    private fun fillFields(
+        groups: List<Group>,
+        users: Map<String, User>,
+        debtorsIds: Map<String, Double>?
+    ) {
         userGroups = groups
         groupUsers = users
 
         view.showDescription(debtText)
         view.showSum(fixedSum)
-        view.showDate(debtDate.getFormatTime())
+        view.showDate(debtDate.getDate())
 
         view.showGroupOptions(userGroups, groupId) { group ->
             onGroupSelected(group)
@@ -87,7 +91,7 @@ class AddDebtPresenterImpl @Inject constructor(
             currency.currencyCode
         ) { currency -> onCurrencyChanged(currency) }
 
-        debtorsIds?.forEach{ (userId: String, sum: Double) ->
+        debtorsIds?.forEach { (userId: String, sum: Double) ->
             groupUsers[userId]?.let {
                 val debtor = Debtor(it)
                 debtor.sum = sum
@@ -138,7 +142,7 @@ class AddDebtPresenterImpl @Inject constructor(
     }
 
     override fun saveDebtTapped() {
-        if (isValidDebt(fixedSum, debtors.map { it.sum })) {
+        if (isValidDebt(debtText,fixedSum, debtors.map { it.sum })) {
             view.removeDebtError()
             val creditorName = groupUsers[creditorId]?.username ?: ""
             val debtorsIds = debtors.map { it.user.id to it.sum }.toMap()
@@ -148,9 +152,9 @@ class AddDebtPresenterImpl @Inject constructor(
                 creditorName,
                 debtText,
                 debtorsIds,
-                debtDate.getFormatTime(),
+                debtDate,
                 authenticationInterface.getUserId(),
-                Calendar.getInstance().getFormatTime(),
+                Calendar.getInstance().timeInMillis,
                 status,
                 currency,
                 debtId
@@ -167,9 +171,11 @@ class AddDebtPresenterImpl @Inject constructor(
     }
 
     override fun dateChangeTapped() {
-        val year = debtDate[Calendar.YEAR]
-        val month = debtDate[Calendar.MONTH]
-        val day = debtDate[Calendar.DAY_OF_MONTH]
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = debtDate
+        val year = calendar[Calendar.YEAR]
+        val month = calendar[Calendar.MONTH]
+        val day = calendar[Calendar.DAY_OF_MONTH]
         view.showDatePickerDialog(year, month, day) { y, m, d -> onDateSet(y, m, d) }
     }
 
@@ -179,9 +185,9 @@ class AddDebtPresenterImpl @Inject constructor(
 
     override fun equalCalcTapped() {
         if (fixedSum > 0 && debtors.isNotEmpty()) {
-            val num = fixedSum/debtors.size
-            debtors.forEach{
-               view.removeDebtor(it)
+            val num = fixedSum / debtors.size
+            debtors.forEach {
+                view.removeDebtor(it)
                 it.sum = num
                 view.addDebtor(it)
             }
@@ -210,6 +216,25 @@ class AddDebtPresenterImpl @Inject constructor(
         }
     }
 
+    override fun onBackPressed(ifChanged: (Boolean) -> Unit) {
+        val creditorName = groupUsers[creditorId]?.username ?: ""
+        val debtorsIds = debtors.map { it.user.id to it.sum }.toMap()
+        val debt = Debt(
+            groupId,
+            creditorId,
+            creditorName,
+            debtText,
+            debtorsIds,
+            debtDate,
+            oldDebt?.lastChangerId?:"",
+            oldDebt?.lastChangeDate?:0L,
+            oldDebt?.status?:status,
+            currency,
+            debtId
+        )
+        ifChanged(debt != oldDebt)
+    }
+
     override fun setView(view: AddDebtView) {
         this.view = view
     }
@@ -223,21 +248,20 @@ class AddDebtPresenterImpl @Inject constructor(
     }
 
     private fun onDateSet(year: Int, month: Int, day: Int) {
-        debtDate.set(Calendar.YEAR, year)
-        debtDate.set(Calendar.MONTH, month)
-        debtDate.set(Calendar.DAY_OF_MONTH, day)
-        view.showDate(debtDate.getFormatTime())
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month)
+        calendar.set(Calendar.DAY_OF_MONTH, day)
+        debtDate = calendar.timeInMillis
+        view.showDate(debtDate.getDate())
     }
 
     private fun onAddDebtResult(isSuccessful: Boolean) {
         if (isSuccessful) {
             view.onDebtAdded()
+            presenterJob.cancel()
         } else {
             view.showAddDebtError()
         }
-    }
-
-    fun onStop() {
-        presenterJob.cancel()
     }
 }

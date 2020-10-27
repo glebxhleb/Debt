@@ -12,7 +12,7 @@
     <string name="log_in_button">Log in</string>
     <string name="all_debts_title">All debts</string>
     <string name="my_profile_title">My profile</string>
-    <string name="log_out_button">Log out</string>
+    <string name="log_out_button">Выйти из аккаунта</string>
     <string name="email_text">User email: %s</string>
     <string name="username_text">Username: %s</string>
     <string name="welcome_description">In order to join us, you first need to sign up :]</string>
@@ -31,6 +31,17 @@
     <string name="debtors">Участники</string>
     <string name="edit_debt">Редактирование события</string>
     <string name="new_debt">Новое событие</string>
+    <string name="today">cегодня</string>
+    <string name="description">Описание</string>
+    <string name="group">Группа</string>
+    <string name="date">Дата</string>
+    <string name="payed">Платил</string>
+    <string name="sum">Сумма</string>
+    <string name="equal">Поровну</string>
+    <string name="calc">Посчитать</string>
+    <string name="contacts">Контакты</string>
+    <string name="groups">Группы</string>
+    <string name="events">События</string>
 
     <string-array name="currency">
         <item>₽</item>

@@ -24,6 +24,7 @@ class ProfileFragment : Fragment(), ProfileView {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     presenter.setView(this)
+    presenter.getProfile()
     initUi()
   }
 

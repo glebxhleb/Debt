@@ -2,6 +2,7 @@ package com.copper.debt.presentation
 
 
 import com.copper.debt.model.Debt
+import com.copper.debt.model.Group
 import com.copper.debt.model.User
 import com.copper.debt.ui.addDebt.AddDebtView
 import kotlinx.coroutines.Job
@@ -26,4 +27,6 @@ interface AddDebtPresenter : BasePresenter<AddDebtView> {
     fun addDebtorsTapped()
 
     fun onDebtorChecked(debtor: User, isChecked: Boolean)
+
+    fun onBackPressed(ifChanged: (Boolean) -> Unit)
 }
