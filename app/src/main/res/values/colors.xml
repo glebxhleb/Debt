@@ -10,6 +10,9 @@
     <color name="transparent">#00000000</color>
     <color name="gray_very_light">#B1B6C2</color>
 
+    <color name="colorPrimaryLight">#65B18E</color>
+    <color name="colorPrimaryDark">#345C4A</color>
+
     <color name="color_1">#1D272A</color>
     <color name="color_2">#4D886D</color>
     <color name="color_3">#B1CD81</color>

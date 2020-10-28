@@ -3,7 +3,8 @@ package com.copper.debt.presentation.implementation
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
 import com.copper.debt.firebase.database.FirebaseDatabaseInterface
 import com.copper.debt.presentation.ProfilePresenter
-import com.copper.debt.ui.profile.ProfileView
+import com.copper.debt.ui.main.ProfileView
+
 import javax.inject.Inject
 
 class ProfilePresenterImpl @Inject constructor(

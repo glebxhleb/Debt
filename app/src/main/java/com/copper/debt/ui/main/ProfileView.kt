@@ -1,4 +1,4 @@
-package com.copper.debt.ui.profile
+package com.copper.debt.ui.main
 
 interface ProfileView {
 

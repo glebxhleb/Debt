@@ -43,6 +43,7 @@
     <string name="groups">Группы</string>
     <string name="events">События</string>
 
+
     <string-array name="currency">
         <item>₽</item>
         <item>$</item>

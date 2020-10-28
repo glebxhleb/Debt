@@ -1,63 +1,83 @@
 package com.copper.debt.ui.main
-import MainPagerAdapter
-import android.app.Activity
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.copper.debt.R
-import com.copper.debt.common.onClick
-import com.copper.debt.common.onPageChange
-import com.copper.debt.model.Status
-import com.copper.debt.ui.addDebt.AddDebtActivity
+import com.copper.debt.profilePresenter
 import com.copper.debt.ui.debts.AllDebtsFragment
-import com.copper.debt.ui.profile.ProfileFragment
+import com.copper.debt.ui.welcome.WelcomeActivity
+import com.google.android.material.navigation.NavigationView
 
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ProfileView,
+    NavigationView.OnNavigationItemSelectedListener {
 
-  companion object {
-    fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    private val presenter by lazy { profilePresenter() }
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    companion object {
+        fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
     }
-  }
 
-  private lateinit var profileFragment: ProfileFragment
-  private lateinit var allDebtsFragment: AllDebtsFragment
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        presenter.setView(this)
+        presenter.getProfile()
 
-    initUi()
-  }
+        initUi()
+    }
 
-  private fun initUi() {
-    val adapter = MainPagerAdapter(supportFragmentManager)
-    profileFragment = ProfileFragment()
-    allDebtsFragment = AllDebtsFragment()
-    adapter.setPages(listOf(allDebtsFragment, profileFragment))
+    private fun initUi() {
+        nav_view.setNavigationItemSelectedListener(this)
+        setSupportActionBar(toolbar)
+        appBarConfiguration = AppBarConfiguration.Builder(
+            R.id.nav_home, R.id.nav_contacts, R.id.nav_groups
+        )
+            .setDrawerLayout(drawer_layout)
+            .build();
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(nav_view, navController);
+    }
 
-    mainPager.adapter = adapter
+    override fun showUsername(username: String) {
+        userName.text = username
+    }
 
-    mainPager.offscreenPageLimit = 3
-//    bottomNavigation.setOnNavigationItemSelectedListener {
-//      switchNavigationTab(it.order)
-//      true
-//    }
+    override fun showEmail(email: String) {
+        userEmail.text = email
+    }
 
-//    mainPager.onPageChange { position ->
-//      val item = bottomNavigation.menu.getItem(position)
-//
-//      bottomNavigation.selectedItemId = item.itemId
-//    }
+    override fun openWelcome() {
+        startActivity(Intent(this, WelcomeActivity::class.java))
+        finish()
+    }
 
-//    addDebt.onClick {
-//      startActivity(Intent(this, AddDebtActivity::class.java))
-//    }
-  }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
 
-  private fun switchNavigationTab(position: Int) = mainPager.setCurrentItem(position, true)
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.nav_logout) {
+            presenter.logOut()
+            return true
+        }
+        return false
+    }
 }

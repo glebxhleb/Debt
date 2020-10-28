@@ -12,35 +12,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Username: Some user name"
+        tools:text="Some user name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textSize="18sp" />
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="16dp"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/userEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/userName"
-        tools:text="User email: email@mail.com"
+        tools:text="email@mail.com"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/numberOfDebts"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userEmail"
-        tools:text="Number of debts: 42"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
