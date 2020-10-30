@@ -2,19 +2,19 @@ package com.copper.debt.presentation.implementation
 
 import com.copper.debt.firebase.authentication.FirebaseAuthenticationInterface
 import com.copper.debt.firebase.database.FirebaseDatabaseInterface
-import com.copper.debt.presentation.ProfilePresenter
-import com.copper.debt.ui.main.ProfileView
+import com.copper.debt.presentation.MainPresenter
+import com.copper.debt.ui.main.MainView
 
 import javax.inject.Inject
 
-class ProfilePresenterImpl @Inject constructor(
+class MainPresenterImpl @Inject constructor(
   private val authenticationInterface: FirebaseAuthenticationInterface,
   private val databaseInterface: FirebaseDatabaseInterface
-) : ProfilePresenter {
+) : MainPresenter {
 
-  private lateinit var view: ProfileView
+  private lateinit var view: MainView
 
-  override fun setView(view: ProfileView) {
+  override fun setView(view: MainView) {
     this.view = view
   }
 
@@ -26,6 +26,4 @@ class ProfilePresenterImpl @Inject constructor(
       view.showEmail(it.email)
     }
   }
-
-  override fun logOut() = authenticationInterface.logOut { view.openWelcome() }
 }

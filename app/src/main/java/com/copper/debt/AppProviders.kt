@@ -9,7 +9,7 @@ fun registerPresenter() = component().registerPresenter()
 
 fun allDebtsPresenter() = component().allDebtsPresenter()
 
-fun profilePresenter() = component().profilePresenter()
+fun mainPresenter() = component().mainPresenter()
 
 fun addDebtPresenter() = component().addDebtPresenter()
 
@@ -20,3 +20,9 @@ fun debtorAdapter() = component().debtorAdapter()
 fun selectDebtorsAdapter() = component().selectDebtorsAdapter()
 
 fun debtAdapter() = component().debtAdapter()
+
+fun contactsPresenter() = component().contactsPresenter()
+
+fun contactsAdapter() = component().contactsAdapter()
+
+fun personalAccountPresenter() = component().personalAccountPresenter()

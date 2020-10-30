@@ -20,4 +20,10 @@
         android:name="com.copper.debt.ui.groups.GroupsFragment"
         android:label="@string/groups"
         tools:layout="@layout/fragment_groups" />
+    <fragment
+        android:id="@+id/nav_account"
+        android:name="com.copper.debt.ui.personalAccount.PersonalAccountFragment"
+        android:label="@string/personal_account"
+        tools:layout="@layout/fragment_personal_account"/>
+
 </navigation>

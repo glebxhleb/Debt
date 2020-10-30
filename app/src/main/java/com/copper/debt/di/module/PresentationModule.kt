@@ -19,11 +19,17 @@ abstract class PresentationModule {
   abstract fun allDebtsPresenter(allJokesPresenterImpl: AllDebtsPresenterImpl): AllDebtsPresenter
 
   @Binds
-  abstract fun profilePresenter(profilePresenterImpl: ProfilePresenterImpl): ProfilePresenter
+  abstract fun mainPresenter(mainPresenterImpl: MainPresenterImpl): MainPresenter
 
   @Binds
   abstract fun addDebtPresenter(addDebtPresenterImpl: AddDebtPresenterImpl): AddDebtPresenter
 
   @Binds
   abstract fun welcomePresenter(welcomePresenterImpl: WelcomePresenterImpl): WelcomePresenter
+
+  @Binds
+  abstract fun contactsPresenter(contactsPresenter: ContactsPresenterImpl): ContactsPresenter
+
+  @Binds
+  abstract fun personalAccountPresenter(personalAccountPresenter: PersonalAccountPresenterImpl): PersonalAccountPresenter
 }

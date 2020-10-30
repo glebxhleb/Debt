@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:visibility="gone">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/ic_photo_placeholder"
+            app:civ_border_color="@color/gray_very_light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/MainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:text="Пользователь"
+            app:layout_constraintStart_toEndOf="@+id/photo"
+            app:layout_constraintTop_toTopOf="@+id/photo" />
+
+        <TextView
+            android:id="@+id/emailTitle"
+            style="@style/SignText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/email"
+            app:layout_constraintStart_toStartOf="@+id/name"
+            app:layout_constraintTop_toBottomOf="@+id/name" />
+
+        <TextView
+            android:id="@+id/passwordTitle"
+            style="@style/SignText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/password"
+            app:layout_constraintStart_toStartOf="@+id/eMail"
+            app:layout_constraintTop_toBottomOf="@+id/eMail" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/eMail"
+            style="@style/DateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sesf@mail.com"
+            app:layout_constraintStart_toStartOf="@+id/emailTitle"
+            app:layout_constraintTop_toBottomOf="@+id/emailTitle" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/password"
+            style="@style/DateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text="@string/passwordHolder"
+            app:layout_constraintStart_toStartOf="@+id/passwordTitle"
+            app:layout_constraintTop_toBottomOf="@+id/passwordTitle" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/logout"
+            style="@style/SimpleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/log_out_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp" />
+</FrameLayout>

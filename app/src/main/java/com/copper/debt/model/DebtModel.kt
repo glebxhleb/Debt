@@ -77,6 +77,5 @@ fun Debt.mapToRequest(): HashMap<String, Any> {
 enum class Status : Serializable {
     REMOVED,
     ADDED,
-    CHANGED,
-    NEW
+    CHANGED
 }

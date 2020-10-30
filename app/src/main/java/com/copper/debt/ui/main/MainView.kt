@@ -1,10 +1,8 @@
 package com.copper.debt.ui.main
 
-interface ProfileView {
+interface MainView {
 
   fun showUsername(username: String)
 
   fun showEmail(email: String)
-
-  fun openWelcome()
 }

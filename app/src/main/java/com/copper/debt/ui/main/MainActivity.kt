@@ -10,19 +10,16 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.copper.debt.R
-import com.copper.debt.profilePresenter
-import com.copper.debt.ui.debts.AllDebtsFragment
-import com.copper.debt.ui.welcome.WelcomeActivity
-import com.google.android.material.navigation.NavigationView
+import com.copper.debt.mainPresenter
+
 
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 
-class MainActivity : AppCompatActivity(), ProfileView,
-    NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), MainView {
 
-    private val presenter by lazy { profilePresenter() }
+    private val presenter by lazy { mainPresenter() }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -42,10 +39,9 @@ class MainActivity : AppCompatActivity(), ProfileView,
     }
 
     private fun initUi() {
-        nav_view.setNavigationItemSelectedListener(this)
         setSupportActionBar(toolbar)
         appBarConfiguration = AppBarConfiguration.Builder(
-            R.id.nav_home, R.id.nav_contacts, R.id.nav_groups
+            R.id.nav_home, R.id.nav_contacts, R.id.nav_groups, R.id.nav_account
         )
             .setDrawerLayout(drawer_layout)
             .build();
@@ -62,22 +58,9 @@ class MainActivity : AppCompatActivity(), ProfileView,
         userEmail.text = email
     }
 
-    override fun openWelcome() {
-        startActivity(Intent(this, WelcomeActivity::class.java))
-        finish()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_logout) {
-            presenter.logOut()
-            return true
-        }
-        return false
     }
 }

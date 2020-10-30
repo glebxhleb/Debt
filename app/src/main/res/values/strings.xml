@@ -42,6 +42,10 @@
     <string name="contacts">Контакты</string>
     <string name="groups">Группы</string>
     <string name="events">События</string>
+    <string name="personal_account">Личный кабинет</string>
+    <string name="email">email</string>
+    <string name="password">пароль</string>
+    <string name="passwordHolder">••••••••</string>
 
 
     <string-array name="currency">

@@ -52,10 +52,10 @@ fun Double.format(): String {
             ""
         }
         this % 1 < 0.001 -> {
-            "%.0f".format(this)
+            "%.0f".format(Locale.ROOT, this)
         }
         else -> {
-            "%.2f".format(this)
+            "%.2f".format(Locale.ROOT, this)
         }
     }
 }

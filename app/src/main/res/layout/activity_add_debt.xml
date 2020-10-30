@@ -16,14 +16,15 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <ScrollView
             android:id="@+id/content"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -224,10 +225,11 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/equalSplit"
+                        style="@style/SimpleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
-                        android:backgroundTint="@color/colorPrimary"
+                        android:backgroundTint="@color/colorSecondary"
                         android:text="@string/equal" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -239,10 +241,10 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/calcSum"
+                        style="@style/SimpleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
-                        android:backgroundTint="@color/colorPrimary"
                         android:text="@string/calc" />
 
                 </LinearLayout>
@@ -255,11 +257,12 @@
                     android:orientation="vertical" />
             </LinearLayout>
         </ScrollView>
+
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp" />
     </FrameLayout>
 
 

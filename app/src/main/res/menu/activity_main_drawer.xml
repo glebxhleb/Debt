@@ -16,12 +16,9 @@
             android:id="@+id/nav_contacts"
             android:icon="@drawable/ic_contacts"
             android:title="@string/contacts" />
-
-    </group>
-    <group>
         <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logout"
-            android:title="@string/log_out_button" />
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_personal_account"
+            android:title="@string/personal_account" />
     </group>
 </menu>
